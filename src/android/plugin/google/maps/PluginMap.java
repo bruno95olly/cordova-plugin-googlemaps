@@ -613,9 +613,6 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
       plugins.put(pluginName, pluginEntry);
       mapCtrl.pluginManager.addService(pluginEntry);
 
-      plugin.privateInitialize(pluginName, cordova, webView, null);
-
-      plugin.initialize(cordova, webView);
       ((MyPluginInterface)plugin).setPluginMap(PluginMap.this);
       MyPlugin myPlugin = (MyPlugin) plugin;
       myPlugin.self = (MyPlugin)plugin;
@@ -666,8 +663,6 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
       pluginMap = PluginMap.this;
       pluginMap.mapCtrl.pluginManager.addService(pluginEntry);
 
-      plugin.privateInitialize(className, cordova, webView, null);
-      plugin.initialize(cordova, webView);
       ((MyPluginInterface)plugin).setPluginMap(PluginMap.this);
       pluginEntry.plugin.execute("create", args, callbackContext);
 
@@ -3079,15 +3074,17 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
                   double threshold = calculateDistance(
                     projection.fromScreenLocation(origin),
                     projection.fromScreenLocation(hitArea));
-                  touchPoint = isPointOnTheGeodesicLine(points, point, threshold);
-                  if (touchPoint != null) {
+                  LatLng polyTouchPoint = isPointOnTheGeodesicLine(points, point, threshold);
+                  if (polyTouchPoint != null) {
+                    touchPoint = polyTouchPoint;
                     hitOverlay = polyline;
                     maxZIndex = zIndex;
                     continue;
                   }
                 } else {
-                  touchPoint = isPointOnTheLine(points, point);
-                  if (touchPoint != null) {
+                  LatLng polyTouchPoint = isPointOnTheLine(points, point);
+                  if (polyTouchPoint != null) {
+                    touchPoint = polyTouchPoint;
                     hitOverlay = polyline;
                     maxZIndex = zIndex;
                     continue;
